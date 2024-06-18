@@ -1,25 +1,8 @@
 import numpy as np
-import networkx as nx
-import matplotlib.pyplot as plt
 import math
 import re
 import cProfile, io, pstats
 from pstats import SortKey
-
-class CSP:
-    # https://networkx.org/documentation/stable/reference/classes/digraph.html
-    def __init__(self, n_nodes, consistent,):
-        self.n_nodes = n_nodes
-        self.consistent = consistent
-        self.graph = nx.DiGraph()
-        self.graph.add_nodes_from(range(1,self.n_nodes))
-
-    def plot_graph(self):
-        nx.draw_circular(self.graph, with_labels = True)
-        plt.show()
-
-    def add_edge(self, out_node, in_node, label, weight):
-        self.graph.add_edge(out_node,in_node,label = label, internal_number = weight)
 
 
 class Calculus:
@@ -204,21 +187,3 @@ class Calculus:
     
     def composition(self, relation1, relation2):
         return self.composition_lookup[relation1][relation2]
-
-
-my_reasoner = Calculus()
-# pr = cProfile.Profile()
-# pr.enable()
-#my_reasoner.parse_file("allen.txt")
-#pr.disable()
-#s = io.StringIO()
-#sortby = SortKey.CUMULATIVE
-#ps = pstats.Stats(pr, stream=s).sort_stats(sortby)
-#ps.print_stats()
-#print(s.getvalue())
-#print(my_reasoner.composition(["FI"], "F"))
-my_reasoner.parse_file("allen.txt", compositions_generated=True)
-my_reasoner.parse_csps("cspTest.txt")
-my_reasoner.csps[1].plot_graph()
-
-
