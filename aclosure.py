@@ -1,7 +1,5 @@
-from reasoner import Calculus, CSP
 from itertools import product
 from collections import deque
-import numpy as np
 
 class RefinementSearch:
     
@@ -14,10 +12,6 @@ class RefinementSearch:
     def set_csp(self, csp):
         self.csp = csp
 
-    def set_constraint(self, csp, out_node, in_node, constraint):
-        csp.constraints[out_node][in_node] = constraint
-        csp.constraints[in_node][out_node] = self.calculus.converse(constraint)
-
     def a_closure_v1(self, csp):
         is_refined = False
         print(csp.graph.nodes)
@@ -29,7 +23,7 @@ class RefinementSearch:
                         new_constraint = csp.calculus.cut(csp.constraints[i][j], 
                                                            csp.calculus.composisition(csp.constraints[i][k], csp.constraints[k][j]))
                         if new_constraint != csp.constraint[i][j]:
-                            self.set_constraint(csp, i, j, new_constraint)
+                            csp.set_constraint(csp, i, j, new_constraint)
                             is_refined = False
         return csp
     
@@ -47,13 +41,13 @@ class RefinementSearch:
                 new_constraint_ik = csp.calculus.cut(csp.constraints[i][k], 
                                                            csp.calculus.composisition(csp.constraints[i][j], csp.constraints[j][k]))
                 if new_constraint_ik != csp.constraint[i][k]:
-                            self.set_constraint(csp, i, k, new_constraint_ik)
+                            csp.set_constraint(csp, i, k, new_constraint_ik)
                             queue.append((i,k))
                 
                 new_constraint_kj = csp.calculus.cut(csp.constraints[k][j], 
                                                            csp.calculus.composisition(csp.constraints[k][i], csp.constraints[i][j]))
                 if new_constraint_kj != csp.constraint[k][j]:
-                            self.set_constraint(csp, k, j, new_constraint_kj)
+                            csp.set_constraint(csp, k, j, new_constraint_kj)
                             queue.append((k,j))
         return csp
 
