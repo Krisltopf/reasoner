@@ -44,14 +44,14 @@ class RefinementSearch:
                 if k == i or k == j:
                     continue
 
-                new_constraint_ik = self.calculus.cut(csp.constraints[i][k], 
-                                                           self.calculus.composisition(csp.constraints[i][j], csp.constraints[j][k]))
+                new_constraint_ik = csp.calculus.cut(csp.constraints[i][k], 
+                                                           csp.calculus.composisition(csp.constraints[i][j], csp.constraints[j][k]))
                 if new_constraint_ik != csp.constraint[i][k]:
                             self.set_constraint(csp, i, k, new_constraint_ik)
                             queue.append((i,k))
                 
-                new_constraint_kj = self.calculus.cut(csp.constraints[k][j], 
-                                                           self.calculus.composisition(csp.constraints[k][i], csp.constraints[i][j]))
+                new_constraint_kj = csp.calculus.cut(csp.constraints[k][j], 
+                                                           csp.calculus.composisition(csp.constraints[k][i], csp.constraints[i][j]))
                 if new_constraint_kj != csp.constraint[k][j]:
                             self.set_constraint(csp, k, j, new_constraint_kj)
                             queue.append((k,j))
