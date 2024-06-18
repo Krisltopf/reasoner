@@ -9,8 +9,8 @@ class CSP:
         self.n_nodes = n_nodes +1
         self.consistent = consistent
         self.calculus = calculus
-        self.universal_relation = calculus.num_relations
-        self.constraints = np.empty((self.n_nodes,self.n_nodes))
+        self.universal_relation = calculus.num_relations -1
+        self.constraints = np.empty((self.n_nodes,self.n_nodes), dtype=int)
         self.constraints.fill(self.universal_relation)
 
         self.graph = nx.DiGraph()

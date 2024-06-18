@@ -6,22 +6,6 @@ from pstats import SortKey
 
 
 class Calculus:
-    def __init__(self):
-        self.algebra_symbols = [0, 1]
-        
-        # init relations
-        self.base_relations = ['<','=','>'] #1,2,4 
-        self.num_relations = pow(2, len(self.base_relations))-1
-        
-        # init converse table
-        self.converses = np.array([4,2,1])
-        self.fill_converse_table(self.converses)
-        
-        # init composition table
-        self.compositions = np.array([[1,1,7],[1,2,4],[7,4,4]])
-        #self.fill_composition_table(self.compositions)
-
-        self.csps = []
 
     def fill_converse_table(self, converses):
         self.converse_lookup = np.zeros(self.num_relations, dtype=int)
@@ -66,31 +50,6 @@ class Calculus:
 
         np.save("compositions.npy", self.composition_lookup)
     
-    # nicht fertig!!!
-    def parse_expression(self, input):
-        expression = ''.join(input.split())
-        
-        algebra_symbols_re = '|'.join(self.algebra_symbols)
-        base_relations_re = '|'.join(self.base_relations)
-        arguments = re.split(algebra_symbols_re, expression)
-        seperator = (re.search(algebra_symbols_re, expression)).group()
-        
-        for i, argument in enumerate(arguments):
-            clean_argument = re.sub('[^' + base_relations_re + ']*', '', argument)
-            arguments[i] = self.translate(list(clean_argument))
-           
-        print(arguments)   
-        
-        result = []
-        
-        if seperator == self.algebra_symbols[0]:
-            result = self.complement(arguments[0])
-            
-        elif seperator == self.algebra_symbols[1]:
-            result = self.complement(arguments[0])
-            
-        return result
-    
     def parse_file(self, file_name, compositions_generated = False):
         file = open(file_name, "r")
         content = file.read()
@@ -100,7 +59,7 @@ class Calculus:
         relations = sections[0].split("\n")
         relations = relations[1]
         self.base_relations = relations.split(" ")
-        self.num_relations = pow(2, len(self.base_relations))-1
+        self.num_relations = pow(2, len(self.base_relations))
 
         # set table of converses
         converses = sections[1].split("\n")
@@ -129,31 +88,6 @@ class Calculus:
             self.compositions[x][y] = self.translate(result)
 
         self.fill_composition_table(self.compositions)
-
-
-    def parse_csps(self, file_name):
-        file = open(file_name, "r")
-        content = file.read()
-        graphs = content.split('.')
-        graphs = list(filter(lambda x: x!='',graphs))
-
-        for graph in graphs:
-            edges = graph.split('\n')
-            edges = list(filter(lambda x: x!='',edges))
-            n_nodes = int(edges[0].split(' ')[0])
-            consistent = edges[0].split(' ')[4] != 'NOT'
-            csp = CSP(n_nodes,consistent)
-
-            for edge in edges[1:]:
-                edge = edge[:-1].split('(')
-                out_node = int(edge[0].split(' ')[0])
-                in_node = int(edge[0].split(' ')[1])
-                label = edge[1]
-                constraint = self.translate(edge[1].split(' '))
-                #constraint = edge[1].split(' ')
-                csp.add_edge(out_node,in_node,label,constraint)
-                
-            self.csps.append(csp)
         
     # translates a list of base relation strings into the internal number representation
     def translate(self, symbols):
@@ -174,7 +108,7 @@ class Calculus:
         return relations
 
     def complement(self, relation):
-        return ~relation & (self.num_relations)
+        return ~relation & (self.num_relations -1)
 
     def cut(self, relation1, relation2):
         return relation1 & relation2

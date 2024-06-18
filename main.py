@@ -30,6 +30,5 @@ def parse_csps(file_name, calculus):
 my_reasoner = Calculus()
 my_reasoner.parse_file("allen.txt", compositions_generated=True)
 csp_list = parse_csps("cspTest.txt", my_reasoner)
-csp_list[0].plot_graph()
 refinement_search = RefinementSearch()
 refinement_search.a_closure_v1(csp_list[0])
