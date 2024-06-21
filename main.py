@@ -1,6 +1,7 @@
 from calculus import Calculus
 from csp import CSP
 from aclosure import RefinementSearch
+import sys
 
 def parse_csps(file_name, calculus):
     csp_list = []
@@ -31,4 +32,7 @@ my_reasoner = Calculus()
 my_reasoner.parse_file("allen.txt", compositions_generated=True)
 csp_list = parse_csps("cspTest.txt", my_reasoner)
 refinement_search = RefinementSearch()
-refinement_search.a_closure_v1(csp_list[0])
+
+print(csp_list[0].constraints)
+print(refinement_search.refinementV1(csp_list[1]))
+print(csp_list[0].constraints)

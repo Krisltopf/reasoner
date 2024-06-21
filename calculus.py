@@ -98,26 +98,35 @@ class Calculus:
             relations = relations | pow(2, self.base_relations.index(symbol))
         return relations
     
-    def translate_inv(self, symbol_bin):
-        indeces = symbol_bin & self.num_relations
+    def translate_inv(self, relation: int):
+        indeces = relation & self.num_relations -1
         relations = []
         for i in range(len(self.base_relations)):
             if indeces % 2 == 1:
                 relations.append(self.base_relations[i])
             indeces = indeces // 2
         return relations
+    
+    def get_base_relations(self, relation: int):
+        indeces = relation & self.num_relations -1
+        relations = []
+        for i in range(len(self.base_relations)):
+            if indeces % 2 == 1:
+                relations.append(np.power(2, i))
+            indeces = indeces // 2
+        return relations
 
-    def complement(self, relation):
+    def complement(self, relation: int):
         return ~relation & (self.num_relations -1)
 
-    def cut(self, relation1, relation2):
+    def cut(self, relation1: int, relation2: int):
         return relation1 & relation2
     
-    def union(self, relation1, relation2):
+    def union(self, relation1: int, relation2: int):
         return relation1 | relation2
     
-    def converse(self, relation):
+    def converse(self, relation: int):
         return self.converse_lookup[relation]
     
-    def composition(self, relation1, relation2):
+    def composition(self, relation1: int, relation2: int):
         return self.composition_lookup[relation1][relation2]

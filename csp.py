@@ -29,3 +29,20 @@ class CSP:
 
         internal_number = self.calculus.translate(constraint_list)
         self.set_constraint(out_node, in_node, internal_number)
+
+    def only_base_relations(self):
+        for i in range(self.n_nodes):
+            for j in range(self.n_nodes):
+                if i != j and np.log2(self.constraints[i][j]) % 1 != 0:
+                    return False
+        
+        return True
+    
+    def find_complex_relations(self):
+        relations = []
+        for i in range(self.n_nodes):
+            for j in range(self.n_nodes):
+                if i != j and np.log2(self.constraints[i][j]) % 1 != 0:
+                    relations.append((i,j))
+        
+        return relations
