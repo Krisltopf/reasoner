@@ -53,8 +53,8 @@ class RefinementSearch:
                 
                 if new_constraint_ik == 0 or new_constraint_kj == 0 or csp.constraints[k][j] == 0 or csp.constraints[i][k] == 0:
                      csp.constraints = np.zeros_like(csp.constraints)
-                     return csp
-        return csp
+                     return csp, False
+        return csp, True
 
     def refinementV1(self, csp: CSP, depth = 0):
         
@@ -76,14 +76,16 @@ class RefinementSearch:
                     if refinement:
                         return True
                     csp.constraints = old_constraints
+            if depth == 0 and j >= 4:
+                 return False
         
         return False
     
     def refinementV1_5(self, csp: CSP):
-         self.refinementRecV1_5[csp]
+         return self.refinementRecV1_5(csp)
 
     def refinementRecV1_5(self, csp: CSP, queue = []):
-         csp = self.a_closure_v2(csp, queue)
+         csp, consistent = self.a_closure_v2(csp, queue)
          if 0 in csp.constraints:
              return False
          complex_relations = csp.find_complex_relations()
@@ -99,6 +101,39 @@ class RefinementSearch:
                         if self.refinementRecV1_5(csp, deque([(i,j)])):
                             return True
                 csp.constraints[i][j] = old_constraint
+        
+         return False
 
+    def refinementV2(self, csp: CSP):
+        csp, consistent = self.a_closure_v2(csp) #änderungen undo!!!
+        if not consistent:
+            return False
+        complex_relations = csp.find_complex_relations()
 
-         
+        # check for tractable subsets
+        isTractable = True
+        for i,j in complex_relations:
+             if not csp.calculus.tractable_subset[csp.constraints[i][j]]:
+                  isTractable = False
+                  break  
+        if isTractable:
+             return True
+             
+
+        while not isTractable:
+            i,j = self.getNextRelation()
+            tractableRelations = self.split(csp.constraints[i][j])
+            old_constraints = csp.constraints.copy()
+            for relation in tractableRelations:
+                 csp.set_constraint(i, j, relation)
+                 csp, consistent = self.a_closure_v2(csp)
+                 if not consistent:
+                      csp.constraints = old_constraints
+
+        return True
+    
+    def split(self, relation):
+         pass
+    
+    def getNextRelation(self, complex_relations):
+         return complex_relations.pop()

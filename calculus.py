@@ -1,8 +1,6 @@
 import numpy as np
 import math
 import re
-import cProfile, io, pstats
-from pstats import SortKey
 
 
 class Calculus:

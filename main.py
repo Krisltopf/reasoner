@@ -3,6 +3,9 @@ from csp import CSP
 from aclosure import RefinementSearch
 import sys
 
+import cProfile, io, pstats
+from pstats import SortKey
+
 def parse_csps(file_name, calculus):
     csp_list = []
     file = open(file_name, "r")
@@ -33,6 +36,14 @@ my_reasoner.parse_file("allen.txt", compositions_generated=True)
 csp_list = parse_csps("cspTest.txt", my_reasoner)
 refinement_search = RefinementSearch()
 
-print(csp_list[0].constraints)
-print(refinement_search.refinementV1(csp_list[1]))
-print(csp_list[0].constraints)
+pr = cProfile.Profile()
+pr.enable()
+print(refinement_search.refinementV1_5(csp_list[1]))
+pr.disable()
+s = io.StringIO()
+sortby = SortKey.CUMULATIVE
+ps = pstats.Stats(pr, stream=s).sort_stats(sortby)
+ps.print_stats()
+print(s.getvalue())
+
+
